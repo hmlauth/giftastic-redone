@@ -21,6 +21,7 @@
 #search {
     position: relative;
     height: 100%;
+    overflow: auto;
 }
 
 .input-group {
@@ -94,4 +95,8 @@
 
 .saved-giphy {
     margin-right: 1em;
+}
+
+#heading {
+    
 }
