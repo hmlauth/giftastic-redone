@@ -1,0 +1,97 @@
+
+
+.jumbotron {
+    margin: 0;
+    width: 100%;
+}
+
+.content-row {
+    height: 600px;
+    position: fixed;
+    top: 324px;
+    width: 100%;
+}
+
+#favorites {
+    height: 100%;
+    background-color: lightcoral;
+    overflow: auto;
+}
+
+#search {
+    position: relative;
+    height: 100%;
+}
+
+.input-group {
+    position: absolute;
+    padding: 2em;
+}
+
+.search-results-row {
+    justify-content: center;
+    margin: auto;
+}
+
+.search-results {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    flex-flow: wrap;
+    justify-content: space-evenly; 
+    height: 100%;
+    overflow: auto;
+    padding: 2em 0 2em 0;
+    position: absolute;
+    top: 25%;
+    border: 1px solid black;
+}
+
+.card {
+    margin: 1em;
+    transition: all .2s ease-in-out; 
+}
+
+.card:hover { 
+    transform: scale(1.1);
+    box-shadow: 5px 10px 18px #888888;
+}
+
+.clear-all {
+    right: 34px;
+    text-align: right;
+    margin: 10px;
+    position: absolute;
+    top: 116px;
+}
+
+.card-body {
+    display: flex;
+    justify-content: space-between;
+}
+
+#clear-all {
+    color: lightslategray;
+    font-style: italic;
+}
+
+#clear-all:hover {
+    color: lightcoral;
+}
+
+#clear-all:active {
+    color: darkred;
+}
+
+.saved-div {
+    position: relative;
+    text-align: center;
+    margin: 2em;
+    background-color: rgb(255, 255, 255, 0.1);
+    padding: 1em;
+    box-shadow: 0px 0px 10px rgb(142, 69, 69);
+}
+
+.saved-giphy {
+    margin-right: 1em;
+}
