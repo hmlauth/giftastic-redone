@@ -1,6 +1,8 @@
+
 let CORS= "https://cors-anywhere.herokuapp.com/";
 let localStorageIds = [];
 let searchTerms = [];
+let apiKey = config.API_KEY;
 
 function searchGiphys(searchTerm) {
     if (searchTerms.length > 0 && searchTerms.indexOf(searchTerm) > -1 ) {
@@ -12,7 +14,7 @@ function searchGiphys(searchTerm) {
 
         searchTerms.push(searchTerm);
 
-        let queryURL = CORS + 'http://api.giphy.com/v1/gifs/search?q=' + searchTerm + '&api_key=nNJaO7RRux2S8GgjGHR8eQiVlVx79M9r';
+        let queryURL = CORS + 'http://api.giphy.com/v1/gifs/search?q=' + searchTerm + '&api_key=' + apiKey;
 
         $.ajax({
             url: queryURL,
