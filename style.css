@@ -6,9 +6,7 @@
 }
 
 .content-row {
-    height: 600px;
-    position: fixed;
-    top: 324px;
+    height: 1000px;
     width: 100%;
 }
 
@@ -46,6 +44,7 @@
     position: absolute;
     top: 25%;
     border: 1px solid black;
+    margin-bottom: 2em;
 }
 
 .card {
@@ -63,7 +62,7 @@
     text-align: right;
     margin: 10px;
     position: absolute;
-    top: 116px;
+    top: 215px;
 }
 
 .card-body {
@@ -97,6 +96,8 @@
     margin-right: 1em;
 }
 
-#heading {
-    
+footer {
+    background-color: lightcoral;
+    height: 3em;
+    width: 100%;
 }

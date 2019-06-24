@@ -1,7 +1,9 @@
 /* TODO:
-1. Render favorites on page load
-2. Create buttons for frequently searched terms
-3. Add filter for saved gifs by topic? 
+1. Create buttons for frequently searched terms
+2. Add filter for saved gifs by topic?
+3. Fix styling 
+4. Clear favorites
+5. Make mobile responsive
 */
 
 let CORS = "https://cors-anywhere.herokuapp.com/";
@@ -112,12 +114,27 @@ function verifyIfSaved(currentlySavedGifArray, id) {
   });
 
   return isSaved;
+};
+
+function animateCSS(element, animationName, callback) {
+    const node = document.querySelector(element)
+    node.classList.add('animated', animationName)
+
+    function handleAnimationEnd() {
+        node.classList.remove('animated', animationName)
+        node.removeEventListener('animationend', handleAnimationEnd)
+
+        if (typeof callback === 'function') callback()
+    }
+
+    node.addEventListener('animationend', handleAnimationEnd)
 }
 
 $(document).ready(function() {
   // localStorage.clear();
 
   $(".input-group-text").on("click", function() {
+    animateCSS('h1', 'headShake');
     $(".search-results").empty();
     searchTerm = $("input:text").val();
     console.log("search term", searchTerm);
@@ -197,10 +214,7 @@ $(document).ready(function() {
 
     // TODO: Prevent duplicate saves of same gif/id
 
-    console.log("savedGifs before push", savedGifs);
     let currentGifs = JSON.parse(localStorage.getItem("savedGifs"));
-    console.log("currentGifs", currentGifs);
-    console.log("RETURN VALUE", verifyIfSaved(currentGifs, id));
     if (!verifyIfSaved(currentGifs, id)) {
       savedGifs.push(favGif);
       localStorage.setItem("savedGifs", JSON.stringify(savedGifs));
