@@ -7,10 +7,9 @@
 */
 
 let CORS = "https://cors-anywhere.herokuapp.com/";
-// let localStorageIds = [];
-// let searchTerms = [];
 let apiKey = config.API_KEY;
 
+// ajax call to giphy api
 function searchGiphys(searchTerm) {
   let queryURL =
     CORS +
@@ -24,13 +23,12 @@ function searchGiphys(searchTerm) {
     method: "GET"
   }).then(function(response) {
     let data = response.data;
-    console.log("data", data);
     displayResults(data, searchTerm);
   });
 }
 
+// display ajax response to page
 function displayResults(data, searchTerm) {
-  console.log(data);
   let $searchResults = $(".search-results");
 
   // for each response
@@ -65,14 +63,14 @@ function displayResults(data, searchTerm) {
   }
 }
 
-function showFavorites(input) {
-  console.log(">>>>>", input);
+// render favorites to page
+function showFavorites(array) {
   $("#favorites").empty();
 
   let $favorites = $("#favorites");
 
   // for each object in my savedGifs array (retrieved from localStorage)
-  input.forEach(cv => {
+  array.forEach(cv => {
     let $div = $("<div class='saved-div'>"); // create div
     let $img = $("<img>"); // create img tag
     let $link = $("<a>"); // creat link tag
@@ -97,25 +95,22 @@ function showFavorites(input) {
     $div.append($img, $link, $delete); // append img, link, and delete to div
     $favorites.append($div); // append that div to favorites
   });
-}
+};
 
-function verifyIfSaved(currentlySavedGifArray, id) {
-  console.log("inside verifyIfSaved", currentlySavedGifArray);
+// check if gif has been saved already using gif id
+function verifyIfSaved(array, id) {
   let isSaved;
-  currentlySavedGifArray.forEach(cv => {
-    console.log("cv", cv.id);
-    console.log("id", id);
+  array.forEach(cv => {
     if (cv.id === id) {
-      console.log("True");
       isSaved = true;
     } else {
       isSaved = false;
     }
   });
-
   return isSaved;
 };
 
+// animation for heading
 function animateCSS(element, animationName, callback) {
     const node = document.querySelector(element)
     node.classList.add('animated', animationName)
@@ -128,115 +123,110 @@ function animateCSS(element, animationName, callback) {
     }
 
     node.addEventListener('animationend', handleAnimationEnd)
-}
+};
+
+function getItemLocalStorage(key) {
+    return JSON.parse(localStorage.getItem(key))
+};
+
+function setItemLocalStorage(key, array) {
+    return localStorage.setItem(key, JSON.stringify(array))
+};
+
+function applyAnimation(element) {
+    let state = element.attr("data-state");
+    let stillURL = element.attr("data-still");
+    let animateURL = element.attr("data-animate");
+
+    if (state === "still") {
+    element.attr({
+        src: animateURL,
+        "data-state": "animate"
+    });
+    } else if (state === "animate") {
+    element.attr({
+        src: stillURL,
+        "data-state": "still"
+    });
+    }
+};
 
 $(document).ready(function() {
-  // localStorage.clear();
 
-  $(".input-group-text").on("click", function() {
-    animateCSS('h1', 'headShake');
-    $(".search-results").empty();
-    searchTerm = $("input:text").val();
-    console.log("search term", searchTerm);
-    searchGiphys(searchTerm);
-  });
+    let savedGifs = getItemLocalStorage('savedGifs');
+        if (!Array.isArray(savedGifs)) {
+            savedGifs = [];
+            console.log('savedGifs', savedGifs)
+        } else {
+            showFavorites(savedGifs);
+        }
 
-  $("#clear-all").on("click", function() {
-    $(".search-results").empty();
-  });
+    // on click of 'search' button, render results
+    $(".input-group-text").on("click", function() {
+        animateCSS('h1', 'headShake');
+        $(".search-results").empty();
+        searchTerm = $("input:text").val();
+        searchGiphys(searchTerm);
 
-  $(".search-results").on("click", ".giphy", function() {
-    let src = $(this).attr("src");
-    let state = $(this).attr("data-state");
-    let stillURL = $(this).attr("data-still");
-    let animateURL = $(this).attr("data-animate");
-
-    if (state === "still") {
-      $(this).attr({
-        src: animateURL,
-        "data-state": "animate"
-      });
-    } else if (state === "animate") {
-      $(this).attr({
-        src: stillURL,
-        "data-state": "still"
-      });
-    }
-  });
-
-  $("#favorites").on("click", ".saved-giphy", function() {
-    let src = $(this).attr("src");
-    let state = $(this).attr("data-state");
-    let stillURL = $(this).attr("data-still");
-    let animateURL = $(this).attr("data-animate");
-
-    if (state === "still") {
-      $(this).attr({
-        src: animateURL,
-        "data-state": "animate"
-      });
-    } else if (state === "animate") {
-      $(this).attr({
-        src: stillURL,
-        "data-state": "still"
-      });
-    }
-  });
-
-  // LOCALSTORAGE
-  // Get 'savedGifs' from localStorage.
-  var savedGifs = JSON.parse(localStorage.getItem("savedGifs"));
-  console.log("savedGifs", savedGifs);
-
-  // If what is retrieved from localStorage is NOT an array, then set savedGifs to an empty array (now we can push things to it).
-  if (!Array.isArray(savedGifs)) {
-    savedGifs = [];
-  } else {
-    showFavorites(savedGifs);
-  }
-
-  // if what is retrieved from localStorage IS an array, then render our favorite gifs on page load.
-
-  $(".search-results").on("click", "#fav-btn", function() {
-    event.preventDefault();
-
-    let dataStill = $(this).attr("data-still");
-    let dataAnimate = $(this).attr("data-animate");
-    let dataURL = $(this).attr("data-url");
-    let id = $(this).attr("data-id");
-    // saved gif to localStorage 'savedGifs'
-    let favGif = {
-      id: id,
-      dataStill: dataStill,
-      dataAnimate: dataAnimate,
-      dataURL: dataURL
-    };
-
-    // TODO: Prevent duplicate saves of same gif/id
-
-    let currentGifs = JSON.parse(localStorage.getItem("savedGifs"));
-    if (!verifyIfSaved(currentGifs, id)) {
-      savedGifs.push(favGif);
-      localStorage.setItem("savedGifs", JSON.stringify(savedGifs));
-      showFavorites(savedGifs);
-    } else {
-      $('.modal').modal();
-    }
-  });
-
-  $("#favorites").on("click", ".close", function() {
-    let id = $(this)
-      .parent()
-      .attr("data-id");
-    let savedGifs = JSON.parse(localStorage.getItem("savedGifs"));
-    savedGifs.forEach((cv, i) => {
-      if (cv.id === id) {
-        savedGifs.splice(i, 1); // remove gif from array
-        localStorage.setItem("savedGifs", JSON.stringify(savedGifs)); // set array in localStorage with updated array
-      }
     });
-    $(this)
-      .parent()
-      .remove(); // remove from page
-  });
+
+    // if what is retrieved from localStorage IS an array, then render our favorite gifs on page load.
+    // animate giph if clicked
+    $(".search-results").on("click", "#fav-btn", function() {
+        event.preventDefault();
+
+        // pull off attributes
+        let dataStill = $(this).attr("data-still");
+        let dataAnimate = $(this).attr("data-animate");
+        let dataURL = $(this).attr("data-url");
+        let id = $(this).attr("data-id");
+
+        // saved gif to localStorage 'savedGifs'
+        let favGif = {
+            id: id,
+            dataStill: dataStill,
+            dataAnimate: dataAnimate,
+            dataURL: dataURL
+        };
+
+        // Prevent duplicate saves of same gif/id
+        let currentGifs = getItemLocalStorage('savedGifs');
+        console.log(currentGifs);
+
+        if (currentGifs === null ) {
+            savedGifs.push(favGif);
+            setItemLocalStorage('savedGifs', savedGifs);
+            showFavorites(savedGifs);
+        } else {
+            if (!verifyIfSaved(currentGifs, id)) {
+                savedGifs.push(favGif);
+                setItemLocalStorage('savedGifs', savedGifs);
+                showFavorites(savedGifs);
+            } else {
+                $('.modal').modal();
+            }
+        }
+    });
+
+    // on click of 'x' delete gif from localStorage and remove from page
+    $("#favorites").on("click", ".close", function() {
+        let id = $(this).parent().attr("data-id");
+        let savedGifs = getItemLocalStorage('savedGifs');
+
+        savedGifs.forEach((cv, i) => {
+            if (cv.id === id) {
+                savedGifs.splice(i, 1); // remove gif from array
+                setItemLocalStorage('savedGifs', savedGifs); // set array in localStorage with updated array
+            }
+        });
+        $(this).parent().remove(); // remove from page
+    });
+
+    // on click of any giphy in search results, animate
+    $(".search-results").on("click", ".giphy", function() { applyAnimation($(this)); });
+    // on click of star, save to favorites
+    $("#favorites").on("click", ".saved-giphy", function() { applyAnimation($(this)); });
+    // on click of 'clear all', clear search results
+    $("#clear-all").on("click", function() { $(".search-results").empty(); });
+
 });
