@@ -1,6 +1,8 @@
 # GifTastic - Redone
 For practice, I built this application out from scratch and included `localStorage`. This app queries the [Giphy api](https://developers.giphy.com/docs/) and then dynamically updates the DOM using jQuery. Local storage is used to save your favorites gifs!
 
+![Feeling Giphy?](../master/assets/site-image.png)
+
 To enjoy yourself, follow the below steps:
 
 1. Clone the repo
